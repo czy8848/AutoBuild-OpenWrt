@@ -51,11 +51,12 @@ jobs:
     - name: Clone source code
       env: 
         REPO_URL: https://github.com/czy8848/lede
-        REPO_BRANCH: master
+        REPO_BRANCH: 20230609
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
+        echo "src-git small https://github.com/kenzok8/small"
+        echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> ./feeds.conf.default
 
     - name: Update & Install feeds
       working-directory: ./openwrt
@@ -75,9 +76,10 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && make defconfig
+#       cd openwrt && make defconfig
+        cd openwrt && make menuconfig
         
-    - name: Download package
+    - name: Download package 
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
